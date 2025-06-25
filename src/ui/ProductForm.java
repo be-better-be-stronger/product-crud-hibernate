@@ -1,13 +1,20 @@
 package ui;
 
-import dao.ProductDAO;
 import model.Product;
+import service.ProductService;
+import service.ProductServiceImpl;
+import util.ValidateUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import exceptions.AppException;
+import exceptions.AppExceptionHandler;
+
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ProductForm extends JFrame {
 
@@ -15,13 +22,15 @@ public class ProductForm extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	private JTextField txtId, txtName, txtPrice, txtQuantity, txtUnit, txtCreatedBy;
 	
     private JTable table;
     private DefaultTableModel tableModel;
 
 
-    private ProductDAO dao = new ProductDAO();
+    private ProductService service = new ProductServiceImpl();
+
 
     public ProductForm() {
         setTitle("Quản Lý Sản Phẩm");
@@ -106,8 +115,8 @@ public class ProductForm extends JFrame {
     private void addProduct() {
     	try {
             String name = txtName.getText();
-            double price = Double.parseDouble(txtPrice.getText());
-            int quantity = Integer.parseInt(txtQuantity.getText());
+            double price = ValidateUtil.parsePositiveDouble(txtPrice.getText(), "Giá sản phẩm");
+            int quantity = ValidateUtil.parsePositiveInt(txtQuantity.getText(), "Số lượng");
             String unit = txtUnit.getText();
             String createdBy = txtCreatedBy.getText();
 
@@ -122,12 +131,11 @@ public class ProductForm extends JFrame {
             }
             
             Product p = new Product(name, price, quantity, unit, LocalDate.now(), createdBy);
-            dao.insert(p);
+            service.addProduct(p);
             JOptionPane.showMessageDialog(this, "Thêm thành công!");
             loadDataToTable();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+        } catch (AppException ex) {
+        	AppExceptionHandler.handle(ex, "thêm sản phẩm");
         }
     }
     
@@ -135,7 +143,7 @@ public class ProductForm extends JFrame {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             int id = (int) tableModel.getValueAt(selectedRow, 0);
-            dao.deleteById(id);
+            service.deleteProductById(id);
             loadDataToTable();
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm để xóa!");
@@ -146,8 +154,9 @@ public class ProductForm extends JFrame {
     	 try {
     	        int id = Integer.parseInt(txtId.getText());
     	        String name = txtName.getText();
-    	        double price = Double.parseDouble(txtPrice.getText());
-    	        int quantity = Integer.parseInt(txtQuantity.getText());
+    	        double price = ValidateUtil.parsePositiveDouble(txtPrice.getText(), "Giá sản phẩm");
+    	        int quantity = ValidateUtil.parsePositiveInt(txtQuantity.getText(), "Số lượng");   	        
+    	         	        
     	        String unit = txtUnit.getText();
     	        String createdBy = txtCreatedBy.getText();
     	        
@@ -158,12 +167,11 @@ public class ProductForm extends JFrame {
 
     	        Product p = new Product(id, name, price, quantity, unit, LocalDate.now(), createdBy);
     	        
-    	        dao.update(p);
+    	        service.updateProduct(p);
     	        JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
     	        loadDataToTable();
-    	    } catch (Exception ex) {
-    	        ex.printStackTrace();
-    	        JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật!");
+    	    } catch (AppException ex) {
+    	        AppExceptionHandler.handle(ex, "cập nhật sản phẩm");
     	    }
     }
     
@@ -171,7 +179,7 @@ public class ProductForm extends JFrame {
     	String keyword = JOptionPane.showInputDialog(this, "Nhập tên sản phẩm cần tìm:");
         if (keyword != null && !keyword.trim().isEmpty()) {
             tableModel.setRowCount(0); // Xóa dữ liệu bảng cũ
-            List<Product> list = dao.findByName(keyword);
+            List<Product> list = service.findProductsByName(keyword);
             if (list.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm nào!");
             }
@@ -185,7 +193,7 @@ public class ProductForm extends JFrame {
 
     private void loadDataToTable() {
         tableModel.setRowCount(0);
-        List<Product> list = dao.findAll();
+        List<Product> list = service.getAllProducts();
         for (Product p : list) {
             tableModel.addRow(new Object[]{
                     p.getId(), p.getName(), p.getPrice(), p.getQuantity(), p.getUnit(), p.getCreatedDate(), p.getCreatedBy()
