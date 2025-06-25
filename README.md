@@ -1,41 +1,60 @@
-# 🛠️ Product Management App – Hibernate + MySQL + Java Swing
+# 🛒 Product CRUD with Hibernate
 
-Ứng dụng quản lý sản phẩm sử dụng Java Swing kết hợp với Hibernate ORM và MySQL. Đây là bước 3 trong lộ trình Java Web Fullstack – sử dụng Hibernate thuần thay JDBC.
-
----
-
-## 💡 Tính năng nổi bật
-
-✅ Thêm sản phẩm mới  
-✅ Cập nhật thông tin sản phẩm  
-✅ Xoá sản phẩm  
-✅ Tìm kiếm sản phẩm theo tên  
-✅ Giao diện desktop đơn giản, dễ sử dụng  
-✅ Tự động cập nhật ngày tạo và người tạo  
-✅ ID sản phẩm tự tăng (AUTO_INCREMENT)  
-✅ Kiểm tra đầu vào (giá & số lượng không âm)
+✅ Ứng dụng quản lý sản phẩm (CRUD) sử dụng Java Swing, Hibernate ORM và MySQL.  
+📌 Kiểm tra đầu vào: Giá và số lượng phải là số **không âm**.
 
 ---
 
-## 🧱 Công nghệ sử dụng
+## 🧰 Công nghệ sử dụng
 
-- 💻 Java 17  
-- 🧩 Hibernate ORM 5.6  
-- 💾 MySQL 8  
-- 🖥️ Java Swing (GUI)  
+- ☕ **Java 17**
+- 🌿 **Hibernate ORM 5.6**
+- 🐬 **MySQL 8**
+- 🖥️ **Java Swing (GUI)**
 
 ---
 
 ## 🚀 Hướng dẫn chạy ứng dụng
 
 ### 1. Clone dự án
+
 ```bash
 git clone https://github.com/be-better-be-stronger/product-crud-hibernate.git
 cd product-crud-hibernate
+```
+
+### 2. Cấu hình cơ sở dữ liệu
+
+- Tạo database `product_db` trong MySQL.
+- Chạy script SQL trong file `init.sql` để tạo bảng `products`.
+- Đảm bảo cấu hình kết nối đúng trong file `hibernate.cfg.xml`.
+
+### 3. Chạy ứng dụng
+
+- Mở project trong Eclipse hoặc IntelliJ.
+- Chạy `ProductForm.java` để khởi động giao diện.
 
 ---
 
-## 📌 Liên hệ
-🧑 Dev: Đặng Quốc Thanh
-📧 Email: dangquocthanh.la@gmail.com
-🌐 Dự án cá nhân phục vụ học tập – Java Fullstack Roadmap
+## ✨ Tính năng chính
+
+- Thêm mới sản phẩm ✅
+- Sửa thông tin sản phẩm ✅
+- Xóa sản phẩm ✅
+- Tìm kiếm theo tên ✅
+- Tự động ghi ngày tạo và người tạo ✅
+- Kiểm tra đầu vào không được âm ✅
+
+---
+
+## 📬 Liên hệ
+
+👤 **Dev**: Đặng Quốc Thanh  
+📧 **Email**: dangquocthanh.la@gmail.com  
+📘 **Mục đích**: Dự án cá nhân phục vụ học tập – Java Fullstack Roadmap
+
+---
+
+## ⚖ License
+
+This project is licensed under the [MIT License](LICENSE).
