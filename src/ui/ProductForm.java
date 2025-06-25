@@ -3,6 +3,7 @@ package ui;
 import model.Product;
 import service.ProductService;
 import service.ProductServiceImpl;
+import util.FormMode;
 import util.ValidateUtil;
 
 import javax.swing.*;
@@ -12,9 +13,7 @@ import exceptions.AppException;
 import exceptions.AppExceptionHandler;
 
 import java.awt.*;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class ProductForm extends JFrame {
 
@@ -22,6 +21,8 @@ public class ProductForm extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private FormMode currMode = FormMode.ADD;
 	
 	private JTextField txtId, txtName, txtPrice, txtQuantity, txtUnit, txtCreatedBy;
 	
@@ -114,26 +115,14 @@ public class ProductForm extends JFrame {
 
     private void addProduct() {
     	try {
-            String name = txtName.getText();
-            double price = ValidateUtil.parsePositiveDouble(txtPrice.getText(), "Giá sản phẩm");
-            int quantity = ValidateUtil.parsePositiveInt(txtQuantity.getText(), "Số lượng");
-            String unit = txtUnit.getText();
-            String createdBy = txtCreatedBy.getText();
-
-         // Kiểm tra số âm
-            if (price < 0) {
-                JOptionPane.showMessageDialog(this, "Giá sản phẩm không được âm!");
-                return;
-            }
-            if (quantity < 0) {
-                JOptionPane.showMessageDialog(this, "Số lượng không được âm!");
-                return;
-            }
-            
-            Product p = new Product(name, price, quantity, unit, LocalDate.now(), createdBy);
+    		currMode = FormMode.ADD;
+            Product p = ValidateUtil.validateForm(txtId.getText(), txtName.getText(),
+            		txtPrice.getText(), txtQuantity.getText(), txtUnit.getText(), txtCreatedBy.getText(), 
+            		currMode);
             service.addProduct(p);
             JOptionPane.showMessageDialog(this, "Thêm thành công!");
             loadDataToTable();
+            clearForm();
         } catch (AppException ex) {
         	AppExceptionHandler.handle(ex, "thêm sản phẩm");
         }
@@ -152,24 +141,17 @@ public class ProductForm extends JFrame {
     
     private void updateProduct(){
     	 try {
-    	        int id = Integer.parseInt(txtId.getText());
-    	        String name = txtName.getText();
-    	        double price = ValidateUtil.parsePositiveDouble(txtPrice.getText(), "Giá sản phẩm");
-    	        int quantity = ValidateUtil.parsePositiveInt(txtQuantity.getText(), "Số lượng");   	        
-    	         	        
-    	        String unit = txtUnit.getText();
-    	        String createdBy = txtCreatedBy.getText();
-    	        
-    	        if (price < 0 || quantity < 0) {
-    	            JOptionPane.showMessageDialog(this, "Giá và số lượng không được âm!");
-    	            return;
-    	        }
-
-    	        Product p = new Product(id, name, price, quantity, unit, LocalDate.now(), createdBy);
+    		 currMode = FormMode.UPDATE;
+    		 Product p = ValidateUtil.validateForm(
+    		            txtId.getText(), txtName.getText(), txtPrice.getText(),
+    		            txtQuantity.getText(), txtUnit.getText(), txtCreatedBy.getText(),
+    		            currMode
+    		        );
     	        
     	        service.updateProduct(p);
     	        JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
     	        loadDataToTable();
+    	        clearForm();
     	    } catch (AppException ex) {
     	        AppExceptionHandler.handle(ex, "cập nhật sản phẩm");
     	    }
