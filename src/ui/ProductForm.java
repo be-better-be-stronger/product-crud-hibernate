@@ -16,6 +16,7 @@ public class ProductForm extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTextField txtId, txtName, txtPrice, txtQuantity, txtUnit, txtCreatedBy;
+	
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -42,6 +43,7 @@ public class ProductForm extends JFrame {
         txtQuantity = new JTextField(); txtUnit = new JTextField(); txtCreatedBy = new JTextField();
        
         inputPanel.add(new JLabel("Mã SP:"));
+        txtId.setEnabled(false);
         inputPanel.add(txtId);
         inputPanel.add(new JLabel("Tên SP:"));
         inputPanel.add(txtName);
@@ -103,22 +105,23 @@ public class ProductForm extends JFrame {
 
     private void addProduct() {
     	try {
-            int id = Integer.parseInt(txtId.getText());
-            
-            // 🔍 Kiểm tra mã SP đã tồn tại chưa?
-            if (dao.existsById(id)) {
-                JOptionPane.showMessageDialog(this,
-                    "❌ Mã sản phẩm đã tồn tại!\nVui lòng dùng mã khác hoặc bấm 'Sửa' nếu muốn cập nhật.");
-                return;
-            }
-            
             String name = txtName.getText();
             double price = Double.parseDouble(txtPrice.getText());
             int quantity = Integer.parseInt(txtQuantity.getText());
             String unit = txtUnit.getText();
             String createdBy = txtCreatedBy.getText();
 
-            Product p = new Product(id, name, price, quantity, unit, LocalDate.now(), createdBy);
+         // Kiểm tra số âm
+            if (price < 0) {
+                JOptionPane.showMessageDialog(this, "Giá sản phẩm không được âm!");
+                return;
+            }
+            if (quantity < 0) {
+                JOptionPane.showMessageDialog(this, "Số lượng không được âm!");
+                return;
+            }
+            
+            Product p = new Product(name, price, quantity, unit, LocalDate.now(), createdBy);
             dao.insert(p);
             JOptionPane.showMessageDialog(this, "Thêm thành công!");
             loadDataToTable();
@@ -147,8 +150,14 @@ public class ProductForm extends JFrame {
     	        int quantity = Integer.parseInt(txtQuantity.getText());
     	        String unit = txtUnit.getText();
     	        String createdBy = txtCreatedBy.getText();
+    	        
+    	        if (price < 0 || quantity < 0) {
+    	            JOptionPane.showMessageDialog(this, "Giá và số lượng không được âm!");
+    	            return;
+    	        }
 
     	        Product p = new Product(id, name, price, quantity, unit, LocalDate.now(), createdBy);
+    	        
     	        dao.update(p);
     	        JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
     	        loadDataToTable();

@@ -1,5 +1,8 @@
 /bin/
+/target/
+/.idea/
+/*.iml
 *.class
-.settings/
-.classpath
-.project
+*.log
+*.db
+*.jar

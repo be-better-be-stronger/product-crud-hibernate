@@ -2,17 +2,44 @@ package model;
 
 import java.time.LocalDate;
 
+
+import javax.persistence.*;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+@Entity
+@Table(name = "products")
 public class Product {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
     private int id;
+	
     private String name;
     private double price;
     private int quantity;
     private String unit;
+    
+  
+    @Column(name = "created_date", updatable = false)
     private LocalDate createdDate;
+    
+    @Column(name = "created_by")
     private String createdBy;
 
     public Product() {
     }
+    
+    public Product(String name, double price, int quantity, String unit, LocalDate createdDate, String createdBy) {
+		super();
+		this.name = name;
+		this.price = price;
+		this.quantity = quantity;
+		this.unit = unit;
+		this.createdDate = createdDate;
+		this.createdBy = createdBy;
+	}
 
     public Product(int id, String name, double price, int quantity, String unit, LocalDate createdDate, String createdBy) {
         this.id = id;
@@ -20,7 +47,7 @@ public class Product {
         this.price = price;
         this.quantity = quantity;
         this.unit = unit;
-        this.createdDate = createdDate;
+        this.createdDate = LocalDate.now();
         this.createdBy = createdBy;
     }
 
@@ -79,4 +106,5 @@ public class Product {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+
 }
